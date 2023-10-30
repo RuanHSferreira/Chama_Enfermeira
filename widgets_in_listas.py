@@ -9,18 +9,21 @@ class Main:
     def __init__(self) -> None:
         self.root = Window()
         self.root.geometry("800x800")
+        #self.root.state("zoomed")
+        #self.root.attributes('-fullscreen', True)
         self.pasta = os.path.dirname(__file__)
-        self.my_font = Font(size=50)
+        self.my_font = Font(size=20)
 
         self.carre_img()
 
+        self.times_cron = {}
         self.wid_dic = {}
         self.imgs_dic = {}
         self.frames_dict = {}
         
         # self.btn_frame()
         self.creat_fr(4, 2)
-        # self.creat_fr(8, 3)
+        self.creat_fr(4, 2)
 
         self.root.mainloop()
 
@@ -35,31 +38,34 @@ class Main:
         linha = 0
         for i in range(0, lb_quant):
 
-            print(f"{i%num_colunas}")
             if i != 0 and i%num_colunas == 0:
-                linha += 1
+                # Conforme a quantidade de widgets que tiver aumentar o numero!
+                linha += 2
 
             # Eu incurtei a codigo mais aqui seria uma imagem mas tu pode tirar esse image=self.cama_img e passar um text
             self.imgs_dic[f"img 0{str(i+1)}"] = ttk.Label(self.frames_dict[frame_name][0], image=self.cama_img)
-            self.imgs_dic[f"img 0{str(i+1)}"].grid(row=i//num_colunas+linha, column=i%num_colunas, padx=15, pady=15)
+            self.imgs_dic[f"img 0{str(i+1)}"].grid(row=i//num_colunas+linha, column=i%num_colunas, padx=15, pady=5)
 
-            self.wid_dic[f"Leito 0{str(i+1)}"] = ttk.Label(self.frames_dict[frame_name][0], text=f"Leito 0{str(i+1)}", font=30)
-            self.wid_dic[f"Leito 0{str(i+1)}"].grid(row=i//num_colunas+linha+1, column=i%num_colunas, padx=15, pady=15)
+            self.times_cron[f"Leito 0{str(i+1)}"] = ttk.Label(self.frames_dict[frame_name][0], text="00:00", font=Font(size=20), foreground='red')
+            self.times_cron[f"Leito 0{str(i+1)}"].grid(row=i//num_colunas+linha+1, column=i%num_colunas)
+
+            self.wid_dic[f"Leito 0{str(i+1)}"] = ttk.Label(self.frames_dict[frame_name][0], text=f"Leito 0{str(i+1)}", font=Font(size=10))
+            self.wid_dic[f"Leito 0{str(i+1)}"].grid(row=i//num_colunas+linha+2, column=i%num_colunas, padx=15, pady=5)
 
         lb = {f"Label {frame_name}": ttk.Label(self.frames_dict[frame_name][0], text=str(frame_name), font=self.my_font)}
         self.frames_dict[frame_name].append(dict(lb))
-        print(self.frames_dict[frame_name])
         self.frames_dict[frame_name][1][f"Label {frame_name}"].grid(columnspan=9)
 
         del linha
+        del lb
 
     def carre_img(self):
 
-        self.cama_img = Image.open(self.pasta+'/imgs/maca2.png').resize((150, 150), resample=3)
+        self.cama_img = Image.open(self.pasta+'/imgs/maca2.png').resize((70, 70), resample=3)
         self.cama_img = ImageTk.PhotoImage(self.cama_img)
 
         self.cama_img_vermelha = Image.open(self.pasta+'/imgs/maca.png')
-        self.cama_tam_1 = self.cama_img_vermelha.resize((150, 150), resample=3)
+        self.cama_tam_1 = self.cama_img_vermelha.resize((100, 100), resample=3)
         self.cama_tam_2 = self.cama_img_vermelha.resize((160, 160), resample=3)
         self.cama_img_vermelha = ImageTk.PhotoImage(self.cama_tam_1)
 

@@ -17,15 +17,15 @@ class WidgetsFuncResp(object):
             leito_press['image'] = self.cama_img
             self.add_cr.grid_forget()
 
-        elif str(leito_press) == '.!frame.!label3' and serial_respost == 22:
+        elif str(leito_press) == '.!frame.!label4' and serial_respost == 22:
 
             leito_press['image'] = self.cama_img
 
-        elif str(leito_press) == '.!frame.!label5' and serial_respost == 33:
+        elif str(leito_press) == '.!frame.!label6' and serial_respost == 33:
             
             leito_press['image'] = self.cama_img
 
-        elif str(leito_press) == '.!frame.!label7' and serial_respost == 44:
+        elif str(leito_press) == '.!frame.!label8' and serial_respost == 44:
             
             leito_press['image'] = self.cama_img
 
@@ -135,7 +135,7 @@ class Main(WidgetsTk, WidgetsFuncResp):
         self.carre_img()
         self.enfermaria_1_frame()
         self.enfermaria_2_frame()
-
+        
         self.connect_serial()
         self.root.mainloop()
 
