@@ -10,120 +10,65 @@ class WidgetsFuncResp(object):
 
     def func_pisca1(self, leito_press, atv):
 
-        serial_respost = int(self.resposta.decode().replace('\n', ''))
-        print(leito_press)
-        if str(leito_press) == '.!frame.!label' and serial_respost == 11:
+        serial_respost = str(self.resposta.decode().replace('\n', ''))
 
-            leito_press['image'] = self.cama_img
-            self.add_cr.grid_forget()
+        if serial_respost == leito_press['stop']:
 
-        elif str(leito_press) == '.!frame.!label4' and serial_respost == 22:
-
-            leito_press['image'] = self.cama_img
-
-        elif str(leito_press) == '.!frame.!label6' and serial_respost == 33:
-            
-            leito_press['image'] = self.cama_img
-
-        elif str(leito_press) == '.!frame.!label8' and serial_respost == 44:
-            
-            leito_press['image'] = self.cama_img
+            leito_press['OBJ']['image'] = self.cama_img
 
         else:
 
             if atv == 1:
 
-                leito_press['image'] = self.cama_img
-                self.add_cr.grid_forget()
-                leito_press.after(500, self.func_pisca1, leito_press, 0)
+                leito_press['OBJ']['image'] = self.cama_img
+                leito_press['OBJ'].after(500, self.func_pisca1, leito_press, 0)
 
             else:
 
-                leito_press['image'] = self.cama_img_vermelha
-                self.add_cr.grid(row=0, rowspan=2, sticky='S', pady=50)
-                leito_press.after(500, self.func_pisca1, leito_press, 1)
+                leito_press['OBJ']['image'] = self.cama_verm
+                leito_press['OBJ'].after(500, self.func_pisca1, leito_press, 1)
 
 
 class WidgetsTk(object):
 
-    def enfermaria_1_frame(self):
+    def creat_fr(self, lb_quant, num_colunas, index_column=0, index_line=0):
 
-        self.myimg = Label(self.fr1, image=self.cama_img)
-        self.myimg.grid(padx=15, pady=15)
-        self.label1 = Label(self.fr1, text='Leito 1', font=30)
-        self.label1.grid(padx=15, pady=15)
+        frame_name = f"Enfermaria {len(self.frames_dict)+1}"
+        self.frames_dict[frame_name] = [ttk.Frame(self.root, borderwidth=2, relief='raised')]
+        if index_column > 0 or index_line > 0:
+            self.frames_dict[frame_name][0].grid(padx=10, column=index_column, row=index_line)
+        else:
+            self.frames_dict[frame_name][0].grid(padx=10)
 
-        print(self.label1.winfo_class())
+        self.imgs_dic[f"{frame_name}"] = {}
+        self.times_cron[f"{frame_name}"] = {}
+        self.wid_dic[f"{frame_name}"] = {}
 
-        self.add_cr = Label(self.fr1, image=self.cruz)
-        self.add_cr.grid(row=0, rowspan=2, sticky='S', pady=50)
-        self.add_cr.grid_forget()
+        linha = 0
+        for i in range(0, lb_quant):
 
-        self.myimg2 = Label(self.fr1, image=self.cama_img)
-        self.myimg2.grid(padx=15, pady=15, row=0, column=1)
-        self.label2 = Label(self.fr1, text='Leito 2', font=30)
-        self.label2.grid(padx=15, pady=15, row=1, column=1)
+            if i != 0 and i%num_colunas == 0:
+                # Conforme a quantidade de widgets que tiver aumentar o numero!
+                linha += 2
 
-        self.myimg3 = Label(self.fr1, image=self.cama_img)
-        self.myimg3.grid(padx=15, pady=15)
-        self.label3 = Label(self.fr1, text='Leito 3', font=30)
-        self.label3.grid(padx=15, pady=15)
+            #print(str(f"{len(self.frames_dict)}{i+1}1"))
 
-        self.myimg4 = Label(self.fr1, image=self.cama_img)
-        self.myimg4.grid(padx=15, pady=15, row=2, column=1)
-        self.label4 = Label(self.fr1, text='Leito 4', font=30)
-        self.label4.grid(padx=15, pady=15, row=3, column=1)
+            # Eu incurtei a codigo mais aqui seria uma imagem mas tu pode tirar esse image=self.cama_img e passar um text
+            self.imgs_dic[f"{frame_name}"][f"img 0{str(i+1)}"] = {"OBJ": ttk.Label(self.frames_dict[frame_name][0], image=self.cama_img), "start": str(f"{len(self.frames_dict)}{i+1}1"), "stop": str(f"{len(self.frames_dict)}{i+1}2")}
+            self.imgs_dic[f"{frame_name}"][f"img 0{str(i+1)}"]["OBJ"].grid(row=i//num_colunas+linha, column=i%num_colunas, padx=15, pady=5)
 
-        self.enfer_title = Label(self.fr1, text="Enfermaria 01", font=self.my_font)
-        self.enfer_title.grid(columnspan=9)
+            self.times_cron[f"{frame_name}"][f"Leito 0{str(i+1)}"] = ttk.Label(self.frames_dict[frame_name][0], text="00:00", font=Font(size=20), foreground='red')
+            self.times_cron[f"{frame_name}"][f"Leito 0{str(i+1)}"].grid(row=i//num_colunas+linha+1, column=i%num_colunas)
 
-    def enfermaria_2_frame(self):
+            self.wid_dic[f"{frame_name}"][f"Leito 0{str(i+1)}"] = ttk.Label(self.frames_dict[frame_name][0], text=f"Leito 0{str(i+1)}", font=Font(size=10))
+            self.wid_dic[f"{frame_name}"][f"Leito 0{str(i+1)}"].grid(row=i//num_colunas+linha+2, column=i%num_colunas, padx=15, pady=5)
 
-        self.myimg_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg_fr2.grid(padx=15, pady=15)
-        self.label1_fr2 = Label(self.fr2, text='Leito 1', font=30)
-        self.label1_fr2.grid(padx=15, pady=15)
+        lb = {f"Label {frame_name}": ttk.Label(self.frames_dict[frame_name][0], text=str(frame_name), font=self.my_font)}
+        self.frames_dict[frame_name].append(dict(lb))
+        self.frames_dict[frame_name][1][f"Label {frame_name}"].grid(columnspan=9)
 
-        self.myimg2_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg2_fr2.grid(padx=15, pady=15, row=0, column=1)
-        self.label2_fr2 = Label(self.fr2, text='Leito 2', font=30)
-        self.label2_fr2.grid(padx=15, pady=15, row=1, column=1)
-
-        self.myimg3_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg3_fr2.grid(padx=15, pady=15)
-        self.label3_fr2 = Label(self.fr2, text='Leito 3', font=30)
-        self.label3_fr2.grid(padx=15, pady=15)
-
-        self.myimg4_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg4_fr2.grid(padx=15, pady=15, row=2, column=1)
-        self.label4_fr2 = Label(self.fr2, text='Leito 4', font=30)
-        self.label4_fr2.grid(padx=15, pady=15, row=3, column=1)
-
-
-        self.enfer_title = Label(self.fr2, text="Enfermaria 02", font=self.my_font)
-        self.enfer_title.grid(columnspan=9)
-
-    def efermmaria_3_frame(self):
-
-        self.myimg_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg_fr2.grid(padx=15, pady=15)
-        self.label1_fr2 = Label(self.fr2, text='Leito 1', font=30)
-        self.label1_fr2.grid(padx=15, pady=15)
-
-        self.myimg2_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg2_fr2.grid(padx=15, pady=15, row=0, column=1)
-        self.label2_fr2 = Label(self.fr2, text='Leito 2', font=30)
-        self.label2_fr2.grid(padx=15, pady=15, row=1, column=1)
-
-        self.myimg3_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg3_fr2.grid(padx=15, pady=15, row=0, column=2)
-        self.label3_fr2 = Label(self.fr2, text='Leito 3', font=30)
-        self.label3_fr2.grid(padx=15, pady=15, row=1, column=2)
-
-        self.myimg4_fr2 = Label(self.fr2, image=self.cama_img)
-        self.myimg4_fr2.grid(padx=15, pady=15, row=0, column=3)
-        self.label4_fr2 = Label(self.fr2, text='Leito 4', font=30)
-        self.label4_fr2.grid(padx=15, pady=15, row=1, column=3)
+        del linha
+        del lb
 
 
 class Main(WidgetsTk, WidgetsFuncResp):
@@ -133,9 +78,19 @@ class Main(WidgetsTk, WidgetsFuncResp):
         self.root = Window()
         self.configs()
         self.carre_img()
-        self.enfermaria_1_frame()
-        self.enfermaria_2_frame()
-        
+
+        self.times_cron = {}
+        self.wid_dic = {}
+        self.imgs_dic = {}
+        self.frames_dict = {}
+
+        self.creat_fr(4, 2)
+        self.creat_fr(4, 2, 1)
+        self.creat_fr(4, 2, 2)
+        self.creat_fr(4, 2, 3)
+
+        print(self.imgs_dic)
+
         self.connect_serial()
         self.root.mainloop()
 
@@ -146,26 +101,21 @@ class Main(WidgetsTk, WidgetsFuncResp):
         self.root.title("Chama Enfermeira")
         self.desliga_list = [11, 22, 33, 44]
 
-        self.my_font = Font(size=50)
+        self.my_font = Font(size=20)
 
-        self.fr1 = ttk.Frame(self.root, borderwidth=2, relief='raised')
-        self.fr1.grid(padx=10)
+        # self.fr1 = ttk.Frame(self.root, borderwidth=2, relief='raised')
+        # self.fr1.grid(padx=10)
 
-        self.fr2 = ttk.Frame(self.root, borderwidth=2, relief='raised')
-        self.fr2.grid(padx=10, row=0, column=1)
+        # self.fr2 = ttk.Frame(self.root, borderwidth=2, relief='raised')
+        # self.fr2.grid(padx=10, row=0, column=1)
 
     def carre_img(self):
 
-        self.cama_img = Image.open(self.pasta+'/imgs/maca2.png').resize((150, 150), resample=3)
+        self.cama_img = Image.open(self.pasta+'/imgs/maca2.png').resize((70, 70), resample=3)
         self.cama_img = ImageTk.PhotoImage(self.cama_img)
 
-        self.cama_img_vermelha = Image.open(self.pasta+'/imgs/maca.png')
-        self.cama_tam_1 = self.cama_img_vermelha.resize((150, 150), resample=3)
-        self.cama_tam_2 = self.cama_img_vermelha.resize((160, 160), resample=3)
-        self.cama_img_vermelha = ImageTk.PhotoImage(self.cama_tam_1)
-
-        self.cruz = Image.open(self.pasta+'/imgs/cruz.png').resize((25, 25), resample=3)
-        self.cruz = ImageTk.PhotoImage(self.cruz)
+        self.cama_verm = Image.open(self.pasta+'/imgs/maca.png').resize((70, 70), resample=3)
+        self.cama_verm = ImageTk.PhotoImage(self.cama_verm)
 
     def connect_serial(self):
         self.ser = serialApp()
@@ -180,21 +130,29 @@ class Main(WidgetsTk, WidgetsFuncResp):
         while True:
 
             self.resposta = self.ser.readSerial()
-            if self.resposta.decode().replace('\n', '') == '1':
-                
-                self.myimg.after(500, self.func_pisca1, self.myimg, 0)
+            self._rsp = self.resposta.decode().replace('\n', '')
 
-            elif self.resposta.decode().replace('\n', '') == '2':
-                
-                self.myimg2.after(500, self.func_pisca1, self.myimg2, 0)
+            if self._rsp == self.imgs_dic.get(f"Enfermaria {self._rsp[0]}").get(f"img 0{self._rsp[1]}").get("start"):
+                    self._obj_img = self.imgs_dic.get(f"Enfermaria {self._rsp[0]}").get(f"img 0{self._rsp[1]}").get("OBJ")
+                    self._obj_img.after(500, self.func_pisca1, self.imgs_dic.get(f"Enfermaria {self._rsp[0]}").get(f"img 0{self._rsp[1]}"), 0)
 
-            elif self.resposta.decode().replace('\n', '') == '3':
+            # if self._rsp == '1':
                 
-                self.myimg2.after(500, self.func_pisca1, self.myimg3, 0)
+            #     # self.myimg.after(500, self.func_pisca1, self.myimg, 0)
+            #     self._obj_img = self.imgs_dic.get(f"Enfermaria {self._rsp}").get(f"img 0{self._rsp}")
+            #     self._obj_img.after(500, self.func_pisca1, self._obj_img, 0)
 
-            elif self.resposta.decode().replace('\n', '') == '4':
+            # elif self.resposta.decode().replace('\n', '') == '2':
                 
-                self.myimg2.after(500, self.func_pisca1, self.myimg4, 0)
+            #     self.myimg2.after(500, self.func_pisca1, self.myimg2, 0)
+
+            # elif self.resposta.decode().replace('\n', '') == '3':
+                
+            #     self.myimg2.after(500, self.func_pisca1, self.myimg3, 0)
+
+            # elif self.resposta.decode().replace('\n', '') == '4':
+                
+            #     self.myimg2.after(500, self.func_pisca1, self.myimg4, 0)
 
     def on_th(self):
         self.servidor = thread(target=self.recv_serial, daemon=True)
