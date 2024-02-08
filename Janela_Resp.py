@@ -2,6 +2,7 @@ from ttkbootstrap import Window, Label, ttk
 from serial_python import serialApp
 from threading import Thread as thread
 from PIL import Image, ImageTk
+from configparser import ConfigParser
 import os
 from tkinter.font import Font
 
@@ -71,7 +72,7 @@ class WidgetsTk(object):
         del lb
 
 
-class Main(WidgetsTk, WidgetsFuncResp):
+class Main(WidgetsTk, WidgetsFuncResp, object):
 
     def __init__(self) -> None:
 
@@ -84,10 +85,17 @@ class Main(WidgetsTk, WidgetsFuncResp):
         self.imgs_dic = {}
         self.frames_dict = {}
 
-        self.creat_fr(4, 2)
-        self.creat_fr(4, 2, 1)
-        self.creat_fr(4, 2, 2)
-        self.creat_fr(4, 2, 3)
+        # self.creat_fr(4, 2)
+        # self.creat_fr(4, 2, 1)
+        # self.creat_fr(4, 2, 2)
+        # self.creat_fr(4, 2, 3)
+        for i in self.config_ini['CONFIGURACOES']:
+            num_quantidade = self.config_ini['CONFIGURACOES'][i]
+            if ',' in num_quantidade:
+                for num, i2 in enumerate(num_quantidade.split(",")):
+                    self.creat_fr(int(i2), 2, num)
+            else:
+                self.creat_fr(int(self.config_ini['CONFIGURACOES'][i]), 2)
 
         print(self.imgs_dic)
 
@@ -100,7 +108,8 @@ class Main(WidgetsTk, WidgetsFuncResp):
         self.root.geometry("1920x1080")
         self.root.title("Chama Enfermeira")
         self.desliga_list = [11, 22, 33, 44]
-
+        self.config_ini = ConfigParser()
+        self.config_ini.read("config.ini")
         self.my_font = Font(size=20)
 
         # self.fr1 = ttk.Frame(self.root, borderwidth=2, relief='raised')
@@ -159,4 +168,5 @@ class Main(WidgetsTk, WidgetsFuncResp):
         self.servidor.start()
 
 
-Main()
+if __name__ == "__main__":
+    Main()
